@@ -1,7 +1,7 @@
 use bevy_math::IVec2;
 use bevy_utils::HashMap;
 use bevy_window::{Window, WindowDescriptor, WindowId, WindowMode};
-use winit::dpi::LogicalSize;
+use winit::dpi::{LogicalSize, validate_scale_factor};
 
 #[derive(Debug, Default)]
 pub struct WinitWindows {
@@ -58,6 +58,7 @@ impl WinitWindows {
             }
             .with_resizable(window_descriptor.resizable)
             .with_decorations(window_descriptor.decorations),
+            
         };
 
         let constraints = window_descriptor.resize_constraints.check_constraints();

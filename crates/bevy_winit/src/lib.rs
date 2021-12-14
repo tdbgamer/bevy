@@ -16,8 +16,8 @@ use bevy_math::{ivec2, Vec2};
 use bevy_utils::tracing::{error, trace, warn};
 use bevy_window::{
     CreateWindow, CursorEntered, CursorLeft, CursorMoved, FileDragAndDrop, ReceivedCharacter,
-    WindowBackendScaleFactorChanged, WindowCloseRequested, WindowCreated, WindowFocused,
-    WindowMoved, WindowResized, WindowScaleFactorChanged, Windows,
+    WindowBackendScaleFactorChanged, WindowCloseRequested, WindowCreated, WindowDescriptor,
+    WindowFocused, WindowMoved, WindowResized, WindowScaleFactorChanged, Windows,
 };
 use winit::{
     dpi::PhysicalPosition,
@@ -299,18 +299,21 @@ pub fn winit_runner_with(mut app: App, mut event_loop: EventLoop<()>) {
                         keyboard_input_events.send(converters::convert_keyboard_input(input));
                     }
                     WindowEvent::CursorMoved { position, .. } => {
+                        dbg!(position);
                         let mut cursor_moved_events =
                             world.get_resource_mut::<Events<CursorMoved>>().unwrap();
                         let winit_window = winit_windows.get_window(window_id).unwrap();
-                        let position = position.to_logical(winit_window.scale_factor());
-                        let inner_size = winit_window
-                            .inner_size()
-                            .to_logical::<f32>(winit_window.scale_factor());
+                        let scale_factor = world
+                            .get_resource::<WindowDescriptor>()
+                            .and_then(|x| x.scale_factor_override)
+                            .unwrap_or(winit_window.scale_factor());
+                        let position = position.to_logical(scale_factor);
+                        let inner_size = winit_window.inner_size().to_logical::<f32>(scale_factor);
 
                         // move origin to bottom left
                         let y_position = inner_size.height - position.y;
 
-                        let position = Vec2::new(position.x, y_position);
+                        let position = dbg!(Vec2::new(position.x, y_position));
                         window.update_cursor_position_from_backend(Some(position));
 
                         cursor_moved_events.send(CursorMoved {
