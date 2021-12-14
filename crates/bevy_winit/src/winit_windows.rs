@@ -1,7 +1,7 @@
 use bevy_math::IVec2;
 use bevy_utils::HashMap;
 use bevy_window::{Window, WindowDescriptor, WindowId, WindowMode};
-use winit::dpi::{LogicalSize, validate_scale_factor};
+use winit::dpi::{LogicalSize};
 
 #[derive(Debug, Default)]
 pub struct WinitWindows {
